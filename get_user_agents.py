@@ -1,6 +1,6 @@
 from functools import lru_cache
 import time
-
+import pathlib
 import bs4 as bs
 import os
 import pandas as pd
@@ -10,6 +10,8 @@ from html_table_parse import to_dataframe
 import requests
 import random
 
+
+DIRNAME = str(pathlib.Path().resolve())
 
 @lru_cache
 def check_db(filters):
@@ -40,7 +42,7 @@ def check_db(filters):
 
 
 def get_db():
-    files = os.listdir(os.path.dirname(os.path.realpath(__file__)))
+    files = os.listdir(DIRNAME)
     dbs = [f for f in files if 'db_user_agents' in f]
     if len(dbs) == 0:
         return None
@@ -62,11 +64,11 @@ def collect_agents():
     df = pd.DataFrame(results)
 
     today = datetime.strftime(datetime.now(), '%Y%m%d')
-    dbs = [f for f in os.path.dirname(os.path.realpath(__file__)) if 'db_user_agents' in f]
+    dbs = [f for f in os.listdir(DIRNAME) if 'db_user_agents' in f]
     for x in dbs:
-        os.remove(os.path.dirname(os.path.realpath(__file__)) + '\\' + x)
+        os.remove(DIRNAME + '\\' + x)
 
-    conn = sqlite3.connect(today + '-db_user_agents.db')
+    conn = sqlite3.connect(DIRNAME + '\\' + today + '-db_user_agents.db')
     df.to_sql('user_agents', con=conn, if_exists='replace')
     conn.close()
 
@@ -90,5 +92,6 @@ def list_devices(filter=None):
             query += f' WHERE device LIKE \'%{filter}%\''
         df = pd.read_sql(query, con=conn)
         return df['device'].unique().tolist()
+
 
 
