@@ -28,7 +28,7 @@ DIRNAME_SCREENSHOTS = f'{DIRNAME_ORIGIN}\\screenshots'
 
 def error_handling(func) -> Any:
     '''
-    Wrapper function for handling errors in JavaScript execution
+    Wrapper function for handling errors in JavaScript and Webdriver execution
     '''
     def wrapper(*args, **kwargs):
         try:
