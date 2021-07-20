@@ -78,10 +78,11 @@ class Browser(WebDriver):
         Returns list of WebElements, single WebElement or list of dictionaries for attributes
         '''
         elems = self.find_elements_by_css_selector(selector)
+        url = self.current_url
         if type(attributes) in [list, tuple] and elems:
             output = []
             for elem in elems:
-                attributes = {}
+                attributes = {'url': url}
                 for attribute in attributes:
                     attributes[elem] = elem.get_attribute(attribute)
                 output.append(attributes)
